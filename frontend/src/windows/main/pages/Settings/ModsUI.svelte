@@ -11,7 +11,7 @@
 	import Roblox from '../../ts/roblox';
 	import path from 'path-browserify';
 	import { toast } from 'svelte-sonner';
-	import { OsService } from '$services/osservice';
+	import { OSService } from '$services/osservice';
 
 	let mods: { filename: string; path: string; state: boolean }[] = [];
 	Roblox.Mods.loadMods().then((m) => (mods = m));
@@ -20,7 +20,7 @@
 		try {
 			const modIndex = mods.findIndex((m) => m.path === filePath);
 			if (path.basename(filePath).endsWith('.disabled')) {
-				await OsService.ExecCommand(`mv "${filePath}" "${filePath.replace(/\.disabled$/, '')}"`);
+				await OSService.ExecCommand(`mv "${filePath}" "${filePath.replace(/\.disabled$/, '')}"`, null);
 				if (modIndex >= 0) {
 					mods[modIndex] = {
 						...mods[modIndex],
@@ -29,7 +29,7 @@
 					};
 				}
 			} else {
-				await OsService.ExecCommand(`mv "${filePath}" "${filePath}.disabled"`);
+				await OSService.ExecCommand(`mv "${filePath}" "${filePath}.disabled"`, null);
 				if (modIndex >= 0) {
 					mods[modIndex] = {
 						...mods[modIndex],

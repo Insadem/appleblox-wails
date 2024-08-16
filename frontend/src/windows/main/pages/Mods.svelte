@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SettingsPanel } from '@/types/settings';
 	import Panel from './Settings/Panel.svelte';
-	import { filesystem, os } from '@neutralinojs/lib';
+	import { filesystem } from '@neutralinojs/lib';
 	import path from 'path-browserify';
 	import { sleep } from '../ts/utils';
 	import { toast } from 'svelte-sonner';
@@ -11,6 +11,9 @@
 	import BloxstrapIcon from '@/assets/panel/bloxstrap.png';
 	import { Folder, Book } from 'lucide-svelte';
 	import shellFS from '../ts/shellfs';
+	import { Browser } from '@wailsio/runtime';
+	import { OSService } from '$services/osservice';
+	import { FSPathService } from '$services/fspathservice';
 
 	function settingsChanged(o: { [key: string]: any }) {
 		saveSettings('mods', o);
@@ -21,23 +24,23 @@
 		switch (buttonId) {
 			case 'open_mods_folder':
 				try {
-					const folderPath = path.join(await os.getEnv('HOME'), 'Library', 'Application Support', 'AppleBlox/mods');
-					await os.execCommand(`mkdir -p "${folderPath}"`);
+					const folderPath = path.join(await FSPathService.HomeDir(), 'Library', 'Application Support', 'AppleBlox/mods');
+					await OSService.ExecCommand(`mkdir -p "${folderPath}"`, null);
 					await sleep(10);
-					await os.execCommand(`open "${folderPath}"`);
+					await OSService.ExecCommand(`open "${folderPath}"`, null);
 				} catch (err) {
 					toast.error('An error occured: ' + err);
 					console.error(err);
 				}
 				break;
 			case 'join_bloxstrap':
-				os.open('https://discord.gg/nKjV3mGq6R');
+				Browser.OpenURL('https://discord.gg/nKjV3mGq6R');
 				break;
 			case 'join_appleblox':
-				os.open('https://appleblox.com/discord');
+				Browser.OpenURL('https://appleblox.com/discord');
 				break;
 			case 'mods_help':
-				os.open('https://github.com/pizzaboxer/bloxstrap/wiki/Adding-custom-mods');
+				Browser.OpenURL('https://github.com/pizzaboxer/bloxstrap/wiki/Adding-custom-mods');
 				break;
 		}
 	}
@@ -46,7 +49,7 @@
 		const { id, filePath } = e.detail;
 		switch (id) {
 			case 'custom_font':
-				const cachePath = path.join(await os.getEnv('HOME'), 'Library/Application Support/AppleBlox/.cache/fonts');
+				const cachePath = path.join(await FSPathService.HomeDir(), 'Library/Application Support/AppleBlox/.cache/fonts');
 				await shellFS.createDirectory(cachePath);
 				await filesystem.copy(filePath, path.join(cachePath, `CustomFont${path.extname(filePath)}`));
 				break;
@@ -57,7 +60,7 @@
 		const { id, filePath } = e.detail;
 		switch (id) {
 			case 'custom_font':
-				await os.execCommand('rm -f ~/"Library/Application Support/AppleBlox/.cache/fonts/CustomFont".*');
+				await OSService.ExecCommand('rm -f ~/"Library/Application Support/AppleBlox/.cache/fonts/CustomFont".*', null);
 				break;
 		}
 	}

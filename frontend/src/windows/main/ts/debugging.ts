@@ -5,6 +5,7 @@ import path from "path-browserify";
 import { dataPath, loadSettings } from "./settings";
 import { pathExists } from "./utils";
 import * as StackTrace from "stacktrace-js";
+import { FSService } from "$services/fsservice";
 
 /** Tries to format every variable to a string */
 function formatConsoleLog(...args: any[]): string {
@@ -53,7 +54,7 @@ function getCircularReplacer() {
 export async function clearLogs() {
 	try {
 		const appleBloxDir = path.dirname(await dataPath());
-		// TODO: await filesystem.writeFile(path.join(appleBloxDir, "appleblox.log"), "");
+		await FSService.WriteFile(path.join(appleBloxDir, "appleblox.log"), "");
 	} catch (err) {
 		console.error("Failed to clear the logs:");
 		console.error(err);
@@ -64,7 +65,7 @@ export async function clearLogs() {
 async function appendLog(message: string) {
 	try {
 		const appleBloxDir = path.dirname(await dataPath());
-		// TODO: await filesystem.appendFile(path.join(appleBloxDir, "appleblox.log"), message + "\n");
+		await FSService.AppendFile(path.join(appleBloxDir, "appleblox.log"), message + "\n");
 	} catch (err) {
 		console.error("Failed to write log to file", err);
 	}
@@ -127,7 +128,7 @@ function restoreConsoleFunctions() {
 export async function enableConsoleRedirection() {
 	const appleBloxDir = path.dirname(await dataPath());
 	if (!pathExists(appleBloxDir)) {
-		// TODO: await filesystem.createDirectory(appleBloxDir);
+		await FSService.CreateDirectory(appleBloxDir);
 	}
 	isRedirectionEnabled = true;
 	overrideConsoleFunctions();

@@ -3,7 +3,7 @@
 	import Panel from './Settings/Panel.svelte';
 	import { dataPath, loadSettings, saveSettings } from '../ts/settings';
 	import { toast } from 'svelte-sonner';
-	import { filesystem, os } from '@neutralinojs/lib';
+	import { os } from '@neutralinojs/lib';
 	import path from 'path-browserify';
 	import { pathExists } from '../ts/utils';
 	import { clearLogs, disableConsoleRedirection, enableConsoleRedirection } from '../ts/debugging';
@@ -12,6 +12,7 @@
 	import Roblox from '../ts/roblox';
 	import { Book, Braces, BugOff, List, PictureInPicture, Play, Trash2 } from 'lucide-svelte';
 	import { libraryPath } from '../ts/libraries';
+	import { FSService } from '$services/fsservice';
 
 	// Check for URL scheme (better solution?)
 	// let settingsLoaded = false
@@ -59,11 +60,11 @@
 				try {
 					const filePath = path.join(getRobloxPath(), 'Contents/MacOS/ClientSettings/AppClientSettings.json');
 					if (await pathExists(filePath)) {
-						await filesystem.remove(filePath);
+						await FSService.Remove(filePath);
 					}
-					await filesystem.createDirectory(path.dirname(filePath));
+					await FSService.CreateDirectory(path.dirname(filePath));
 					const fflags = { ...(await Roblox.FFlags.parseFlags(false)), ...(await Roblox.FFlags.parseFlags(true)) };
-					await filesystem.writeFile(filePath, JSON.stringify(fflags));
+					await FSService.WriteFile(filePath, JSON.stringify(fflags));
 					toast.success(`Wrote ClientAppSettings at "${filePath}"`);
 				} catch (err) {
 					console.error(err);
@@ -99,14 +100,14 @@
 				}
 				break;
 			case 'use_roblox_url':
-				console.log(state)
+				console.log(state);
 				Roblox.Utils.toggleURI(state).catch((err) => {
 					toast.error('An error occured');
 					console.error(err);
 				});
 		}
 	}
-	
+
 	const panelOpts: SettingsPanel = {
 		name: 'Misc',
 		description: 'Various miscellaneous features and options',
@@ -201,13 +202,13 @@
 				id: 'advanced',
 				interactables: [
 					{
-						label: "Enable sound for all notifications",
-						description: "Will play a sound for every AppleBlox notification",
-						id: "notify_all",
+						label: 'Enable sound for all notifications',
+						description: 'Will play a sound for every AppleBlox notification',
+						id: 'notify_all',
 						options: {
-							type: "boolean",
-							state: false
-						}
+							type: 'boolean',
+							state: false,
+						},
 					},
 					{
 						label: 'Redirect console.logs to file',

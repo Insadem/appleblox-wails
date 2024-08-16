@@ -6,6 +6,10 @@
 // @ts-ignore: Unused imports
 import {Call as $Call, Create as $Create} from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as $models from "./models.js";
+
 /**
  * CreateDirectory creates a directory or multiple directories recursively.
  * @param {string} path
@@ -14,6 +18,20 @@ import {Call as $Call, Create as $Create} from "@wailsio/runtime";
 export function CreateDirectory(path) {
     let $resultPromise = /** @type {any} */($Call.ByID(847424631, path));
     return $resultPromise;
+}
+
+/**
+ * GetStats returns file statistics for the given path. If the given path doesn't exist or is inaccessible, error is thrown.
+ * @param {string} path
+ * @returns {Promise<$models.Stats> & { cancel(): void }}
+ */
+export function GetStats(path) {
+    let $resultPromise = /** @type {any} */($Call.ByID(3011499167, path));
+    let $typingPromise = /** @type {any} */($resultPromise.then(($result) => {
+        return $$createType0($result);
+    }));
+    $typingPromise.cancel = $resultPromise.cancel.bind($resultPromise);
+    return $typingPromise;
 }
 
 /**
@@ -46,3 +64,6 @@ export function WriteFile(path, data) {
     let $resultPromise = /** @type {any} */($Call.ByID(2990795945, path, data));
     return $resultPromise;
 }
+
+// Private type creation functions
+const $$createType0 = $models.Stats.createFrom;

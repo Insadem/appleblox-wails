@@ -7,7 +7,7 @@
 	import SvelteMarkdown from 'svelte-markdown';
 	import Link from './Link.svelte';
 	import { Browser } from '@wailsio/runtime';
-	import { OsService } from '$services/osservice';
+	import { OSService } from '$services/osservice';
 
 	let showUpdatePopup = false;
 	let updateVersion = version;
@@ -42,7 +42,7 @@
 	checkForUpdate();
 
 	async function getArch() {
-		return (await OsService.Arm()) ? 'arm64' : 'x64';
+		return (await OSService.Arm()) ? 'arm64' : 'x64';
 	}
 </script>
 

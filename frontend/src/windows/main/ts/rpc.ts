@@ -1,4 +1,4 @@
-import { OsService } from '$services/osservice';
+import { OSService } from '$services/osservice';
 import { libraryPath } from './libraries';
 
 /**
@@ -66,7 +66,7 @@ export class DiscordRPC {
 	}
 
 	private async isRunning() {
-		return (await OsService.ExecCommand(`pgrep -f "discordrpc_ablox"`)).stdOut.split('\n').length > 2;
+		return (await OSService.ExecCommand(`pgrep -f "discordrpc_ablox"`, null)).stdOut.split('\n').length > 2;
 	}
 
 	/**
@@ -89,7 +89,7 @@ export class DiscordRPC {
 		const args = DiscordRPC.buildArgs(rpcOptions);
 
 		// Kill any existing discordrpc processes
-		await OsService.ExecCommand(`pkill -f "discordrpc_ablox"`);
+		await OSService.ExecCommand(`pkill -f "discordrpc_ablox"`, null);
 
 		const cmd = `${DiscordRPC.binaryPath} ${args.join(' ')}`;
 		console.log('Starting RPC with: ' + cmd);
@@ -103,7 +103,7 @@ export class DiscordRPC {
 	 */
 	async stop(): Promise<void> {
 		if (await this.isRunning()) {
-			await OsService.ExecCommand(`pkill -f "discordrpc_ablox"`);
+			await OSService.ExecCommand(`pkill -f "discordrpc_ablox"`, null);
 			DiscordRPC.process = null;
 			DiscordRPC.currentOptions = null;
 		}
@@ -261,7 +261,7 @@ export class RPCController {
 		if (discordRPC) {
 			discordRPC.stop();
 		} else {
-			await OsService.ExecCommand(`pkill -f "discordrpc_ablox"`);
+			await OSService.ExecCommand(`pkill -f "discordrpc_ablox"`, null);
 		}
 		discordRPC = new DiscordRPC();
 		await discordRPC.start(options);
@@ -271,6 +271,6 @@ export class RPCController {
 		if (discordRPC) {
 			discordRPC.destroy();
 		}
-		await OsService.ExecCommand(`pkill -f "discordrpc_ablox"`);
+		await OSService.ExecCommand(`pkill -f "discordrpc_ablox"`, null);
 	}
 }

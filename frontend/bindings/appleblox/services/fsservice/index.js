@@ -6,3 +6,5 @@ import * as FSService from "./fsservice.js";
 export {
     FSService
 };
+
+export * from "./models.js";

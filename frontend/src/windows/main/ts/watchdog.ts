@@ -1,5 +1,6 @@
-import { os, filesystem } from "@neutralinojs/lib";
+import { os } from "@neutralinojs/lib";
 import { libraryPath } from "./libraries";
+import { FSService } from "$services/fsservice";
 
 export class AbloxWatchdog {
     private watchdogProcess: os.SpawnedProcess | null = null;
@@ -9,11 +10,11 @@ export class AbloxWatchdog {
         try {
             // Start the watchdog script
             this.watchdogProcess = await os.spawnProcess(String(libraryPath("watchdog")));
-            
+
             // Check if the watchdog actually started or if it exited immediately
             await new Promise(resolve => setTimeout(resolve, 100)); // Short delay to allow script to potentially exit
-            
-            const pidFileExists = await filesystem.getStats('/tmp/ablox_watchdog.pid').then(() => true).catch(() => false);
+
+            const pidFileExists = await FSService.GetStats('/tmp/ablox_watchdog.pid').then(() => true).catch(() => false);
             if (!pidFileExists) {
                 console.log("Watchdog was already running. Using existing instance.");
                 this.watchdogProcess = null;
@@ -38,7 +39,7 @@ export class AbloxWatchdog {
     private async sendHeartbeat() {
         try {
             const currentTime = Date.now().toString();
-            await filesystem.writeFile('/tmp/ablox_heartbeat', currentTime);
+            await FSService.WriteFile('/tmp/ablox_heartbeat', currentTime);
         } catch (error) {
             console.error("Failed to send heartbeat:", error);
         }

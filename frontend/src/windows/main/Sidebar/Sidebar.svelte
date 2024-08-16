@@ -3,7 +3,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import logo from '@/assets/favicon.png';
 	import { version } from '../../../../package.json';
-	import { FspathService } from '$services/fspathservice';
 
 	import IntegrationsIcon from '@/assets/sidebar/integrations.png';
 	import FastFlagsIcon from '@/assets/sidebar/fastflags.png';
@@ -23,7 +22,9 @@
 	import LinkBtn from './LinkBtn.svelte';
 	import { getMode, pathExists } from '../ts/utils';
 	import path from 'path-browserify';
-	import { OsService } from '../../../../bindings/appleblox/services/osservice';
+	import { OSService } from '$services/osservice';
+	import { FSPathService } from '$services/fspathservice';
+	import { Browser } from '@wailsio/runtime';
 
 	export let isLaunched = false;
 
@@ -46,7 +47,7 @@
 		isDevBtnAdded = true;
 	}
 	(async () => {
-		if (await pathExists(path.join(await FspathService.HomeDir(), 'adevmode'))) {
+		if (await pathExists(path.join(await FSPathService.HomeDir(), 'adevmode'))) {
 			console.log('App is in dev mode.');
 			if (!isDevBtnAdded) {
 				sidebarBtns.push({ label: 'Dev', id: 'dev', icon: '' });
@@ -103,7 +104,7 @@
 			target="_blank"
 			rel="noreferrer"
 			on:click={() => {
-				os.open('https://github.com/OrigamingWasTaken/appleblox').catch(console.error);
+				Browser.OpenURL('https://github.com/OrigamingWasTaken/appleblox').catch(console.error);
 			}}
 		>
 			<div class="mt-3 flex">
@@ -136,7 +137,7 @@
 				class={`${isLaunched ? 'bg-blue-400 hover:bg-red-500' : 'bg-green-600 hover:bg-green-800'} font-mono w-full`}
 				on:click={() => {
 					if (isLaunched) {
-						OsService.ExecCommand(`ps aux | grep -i roblox | grep -v grep | awk '{print $2}' | xargs kill -9`);
+						OSService.ExecCommand(`ps aux | grep -i roblox | grep -v grep | awk '{print $2}' | xargs kill -9`, null);
 						return;
 					}
 					dispatch('launchRoblox', true);

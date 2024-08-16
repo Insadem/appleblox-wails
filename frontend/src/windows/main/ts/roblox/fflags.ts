@@ -1,9 +1,10 @@
-import { computer, filesystem } from '@neutralinojs/lib';
+import { computer } from '@neutralinojs/lib';
 import { pathExists } from '../utils';
 import path from 'path-browserify';
 import type { FFlag } from '@/types/settings';
 import { dataPath, loadSettings } from '../settings';
 import { showNotification } from '../notifications';
+import { FSService } from '$services/fsservice';
 
 export class RobloxFFlags {
 	/** Returns every saved FFlags */
@@ -13,7 +14,7 @@ export class RobloxFFlags {
 		if (!(await pathExists(filePath))) {
 			await this.setFlags([]);
 		}
-		const fileContent = await filesystem.readFile(filePath);
+		const fileContent = await FSService.ReadFile(filePath);
 		try {
 			return JSON.parse(fileContent);
 		} catch (error) {
@@ -28,14 +29,14 @@ export class RobloxFFlags {
 		const filePath = path.join(configPath, 'fflags.json');
 		// Check if the AppleBlox/config dir exsits
 		if (!(await pathExists(configPath))) {
-			await filesystem.createDirectory(configPath);
+			await FSService.CreateDirectory(configPath);
 		}
 		// If file exits then we remove it
 		if (await pathExists(filePath)) {
-			await filesystem.remove(filePath);
+			await FSService.Remove(filePath);
 		}
 		// Copy the new file to Application Support
-		await filesystem.writeFile(filePath, JSON.stringify(flags));
+		await FSService.WriteFile(filePath, JSON.stringify(flags));
 	}
 
 	/** Sets a fflag to true or false */
@@ -44,11 +45,11 @@ export class RobloxFFlags {
 		const filePath = path.join(configPath, 'fflags.json');
 		// Check if the AppleBlox/config dir exsits
 		if (!(await pathExists(configPath))) {
-			await filesystem.createDirectory(configPath);
+			await FSService.CreateDirectory(configPath);
 		}
 
 		// Load the fflags from the saved file || empty array
-		let fflags: FFlag[] = JSON.parse(await filesystem.readFile(filePath)) || [];
+		let fflags: FFlag[] = JSON.parse(await FSService.ReadFile(filePath)) || [];
 		// Modify the flag if it exists or create a new one
 		if (fflags.find((f) => f.flag === flag)) {
 			fflags[fflags.findIndex((f) => f.flag === flag)] = { flag, enabled, value };
@@ -329,7 +330,7 @@ export class RobloxFFlags {
 				return {};
 			}
 			const neuPath = path.join(appPath, 'fflags.json');
-			const skibidiOhioFanumTax: { flag: string; enabled: boolean; value: string | number }[] = JSON.parse(await filesystem.readFile(neuPath));
+			const skibidiOhioFanumTax: { flag: string; enabled: boolean; value: string | number }[] = JSON.parse(await FSService.ReadFile(neuPath));
 			for (const flag of skibidiOhioFanumTax) {
 				if (flag.enabled) {
 					fflagsJson[flag.flag] = flag.value;

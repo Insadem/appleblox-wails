@@ -1,7 +1,7 @@
 import { getMode } from "./utils";
 
 import hotkeys from "hotkeys-js";
-import { OsService } from "$services/osservice";
+import { OSService } from "$services/osservice";
 
 // Shortcuts like copy, paste, quit, etc... (they are unimplemented by default in NeuJS)
 hotkeys("ctrl+c,cmd+c", (e) => {
@@ -34,10 +34,10 @@ export async function focusWindow() {
 	try {
 		if (getMode() === "dev") {
 			// So the app can be focused in dev environnement
-			OsService.ExecCommand(`osascript -e 'tell application "System Events" to set frontmost of every process whose unix id is ${window.NL_PID} to true'`);
+			OSService.ExecCommand(`osascript -e 'tell application "System Events" to set frontmost of every process whose unix id is ${window.NL_PID} to true'`, null);
 		} else {
 			// Better way of focusing the app
-			OsService.ExecCommand(`open -a "AppleBlox"`);
+			OSService.ExecCommand(`open -a "AppleBlox"`, null);
 		}
 	} catch (err) {
 		console.error(err);
@@ -46,7 +46,7 @@ export async function focusWindow() {
 
 export async function setWindowVisibility(state: boolean) {
 	try {
-		await OsService.ExecCommand(`osascript -e 'tell application "System Events" to set visible of every process whose unix id is ${window.NL_PID} to ${state}'`)
+		await OSService.ExecCommand(`osascript -e 'tell application "System Events" to set visible of every process whose unix id is ${window.NL_PID} to ${state}'`, null)
 	} catch (err) {
 		console.error(err);
 	}

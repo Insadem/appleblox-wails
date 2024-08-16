@@ -1,10 +1,9 @@
 package osservice
 
 import (
+	"appleblox/pkg/execcmd"
 	"os"
-	"os/exec"
 	"runtime"
-	"strings"
 )
 
 type OSService struct{}
@@ -21,34 +20,14 @@ type ExecResult struct {
 }
 
 func (s *OSService) ExecCommand(command string, config *Config) ExecResult {
-	// Split the command into parts
-	args := strings.Fields(command)
-	if len(args) == 0 {
-		return ExecResult{}
-	}
-
-	var cmd *exec.Cmd
-
-	// Check if the command contains pipes
-	if strings.Contains(command, "|") {
-		// If pipes are present, use bash to execute the full command
-		cmd = exec.Command("bash", "-c", command)
-	} else {
-		cmd = exec.Command(args[0], args[1:]...)
-	}
+	cmd := execcmd.ExecCommand(command, (*execcmd.Config)(config))
+	o, err := execcmd.CombinedOutput(cmd)
 
 	var txtout, txterr string
-
-	if config == nil || !config.Background { // Does wait for command to finish
-		b, err := cmd.CombinedOutput()
-		if err != nil {
-			txterr = err.Error()
-		} else {
-			txtout = string(b)
-		}
-	} else { // Doesn't wait for command to finish
-		cmd.Start()
+	if err != nil {
+		txterr = err.Error()
 	}
+	txtout = string(o)
 
 	if cmd.Process == nil {
 		cmd.Process = &os.Process{}

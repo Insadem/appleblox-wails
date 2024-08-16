@@ -1,4 +1,4 @@
-import { OsService } from "$services/osservice";
+import { OSService } from "$services/osservice";
 
 class shellFS {
 	/**
@@ -7,7 +7,7 @@ class shellFS {
 	 */
 	public static async createDirectory(path: string): Promise<void> {
 		try {
-			const cmd = await OsService.ExecCommand(`mkdir -p "${path}"`);
+			const cmd = await OSService.ExecCommand(`mkdir -p "${path}"`, null);
 			if (cmd.stdErr.length > 2) {
 				throw new Error(cmd.stdErr)
 			}
@@ -23,7 +23,7 @@ class shellFS {
 	 */
 	public static async remove(path: string): Promise<void> {
 		try {
-			const cmd = await OsService.ExecCommand(`rm -rf "${path}"`);
+			const cmd = await OSService.ExecCommand(`rm -rf "${path}"`, null);
 			if (cmd.stdErr.length > 2) {
 				throw new Error(cmd.stdErr)
 			}
@@ -41,7 +41,7 @@ class shellFS {
 	public static async writeFile(path: string, content: string): Promise<void> {
 		try {
 			const escapedContent = content.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-			const cmd = await OsService.ExecCommand(`echo "${escapedContent}" > "${path}"`);
+			const cmd = await OSService.ExecCommand(`echo "${escapedContent}" > "${path}"`, null);
 			if (cmd.stdErr.length > 2) {
 				throw new Error(cmd.stdErr)
 			}
@@ -58,7 +58,7 @@ class shellFS {
 	 */
 	public static async copy(source: string, dest: string, recursive = false): Promise<void> {
 		try {
-			const cmd = await OsService.ExecCommand(`cp ${recursive ? '-r ' : ''} "${source}" "${dest}"`);
+			const cmd = await OSService.ExecCommand(`cp ${recursive ? '-r ' : ''} "${source}" "${dest}"`, null);
 			if (cmd.stdErr.length > 2) {
 				throw new Error(cmd.stdErr)
 			}
@@ -76,7 +76,7 @@ class shellFS {
 	public static async move(source: string, dest: string): Promise<void> {
 		try {
 			const cmd = `mv "${source}" "${dest}"`;
-			await OsService.ExecCommand(cmd);
+			await OSService.ExecCommand(cmd, null);
 		} catch (err) {
 			console.error("Couldn't move");
 			console.error(err);
@@ -91,7 +91,7 @@ class shellFS {
 	public static async merge(source: string, dest: string): Promise<void> {
 		try {
 			const cmd = `rsync -a "${source}" "${dest}"`;
-			await OsService.ExecCommand(cmd);
+			await OSService.ExecCommand(cmd, null);
 		} catch (err) {
 			console.error("Couldn't merge");
 			console.error(err);

@@ -1,9 +1,9 @@
-import { OsService } from "$services/osservice";
+import { OSService } from "$services/osservice";
 
 /** Checks if the path provided exists */
 export async function pathExists(path: string) {
 	try {
-		return (await OsService.ExecCommand(`[ -e "${path}" ] && echo "true" || echo "false"`)).stdOut.trim() === 'true';
+		return (await OSService.ExecCommand(`[ -e "${path}" ] && echo "true" || echo "false"`, null)).stdOut.trim() === 'true';
 	} catch (err) {
 		console.error(err);
 	}
@@ -19,11 +19,11 @@ export function getMode(): 'dev' | 'prod' {
  * @param {string} str - The input string potentially containing non-UTF-8 characters.
  */
 export async function removeNonUTF8CharactersFromString(str: string) {
-	return (await OsService.ExecCommand(`echo "${str}" | iconv -c -f utf-8 -t utf-8`)).stdOut.trim();
+	return (await OSService.ExecCommand(`echo "${str}" | iconv -c -f utf-8 -t utf-8`, null)).stdOut.trim();
 }
 
 export async function isProcessAlive(pid: number | string) {
-	const cmd = await OsService.ExecCommand(`ps -p ${pid}`);
+	const cmd = await OSService.ExecCommand(`ps -p ${pid}`, null);
 	return cmd.stdOut.includes(String(pid));
 }
 
@@ -45,7 +45,7 @@ export function getStringDiff(oldStr: string, newStr: string): string {
 
 export async function curlGet(url: string): Promise<any> {
 	const cmd = `curl -X GET -H "Content-Type: application/json" "${url}"`;
-	const res = JSON.parse(await (await OsService.ExecCommand(cmd)).stdOut.trim());
+	const res = JSON.parse(await (await OSService.ExecCommand(cmd, null)).stdOut.trim());
 	return res;
 }
 
