@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* For WebKit-based browsers */
+::-webkit-scrollbar {
+	width: 12px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+	background: #5d3b3b; /* Color of the scrollbar thumb (the draggable part) */
+	border-radius: 15px;
+}
+
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	color: rgba(255, 255, 255, 0.87);
+	background-color: #242424;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+	:root {
+		--background: 360 11% 95%;
+		--foreground: 360 5% 10%;
+		--card: 360 11% 90%;
+		--card-foreground: 360 5% 15%;
+		--popover: 360 11% 95%;
+		--popover-foreground: 360 95% 10%;
+		--primary: 360 38% 56%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 360 11% 70%;
+		--secondary-foreground: 0 0% 0%;
+		--muted: 322 11% 85%;
+		--muted-foreground: 360 5% 35%;
+		--accent: 322 11% 80%;
+		--accent-foreground: 360 5% 15%;
+		--destructive: 0 50% 30%;
+		--destructive-foreground: 360 5% 90%;
+		--border: 360 20% 50%;
+		--input: 360 20% 23%;
+		--ring: 360 38% 56%;
+		--radius: 0.3rem;
+	}
+	.dark {
+		--background: 360 11% 10%;
+		--foreground: 360 5% 90%;
+		--card: 360 11% 10%;
+		--card-foreground: 360 5% 90%;
+		--popover: 360 11% 5%;
+		--popover-foreground: 360 5% 90%;
+		--primary: 360 38% 56%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 360 11% 20%;
+		--secondary-foreground: 0 0% 100%;
+		--muted: 322 11% 23%;
+		--muted-foreground: 360 5% 60%;
+		--accent: 322 11% 23%;
+		--accent-foreground: 360 5% 50%;
+		--destructive: 0 50% 30%;
+		--destructive-foreground: 360 5% 90%;
+		--border: 360 20% 23%;
+		--input: 360 20% 23%;
+		--ring: 360 38% 56%;
+		--radius: 0.3rem;
+	}
+}
+
+a {
+	font-weight: 500;
+	color: #646cff;
+	text-decoration: inherit;
+}
+a:hover {
+	color: #535bf2;
+}
+
+body {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	color: rgba(255, 255, 255, 0.87);
+	background-color: light-dark(#fff, #242424);
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	margin: 0;
+	display: flex;
+	place-items: center;
+	min-width: 320px;
+	min-height: 100vh;
+	overflow: hidden;
+}
+
+h1 {
+	font-size: 3.2em;
+	line-height: 1.1;
+}
+
+.card {
+	padding: 2em;
+}
+
+#app {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2rem;
+	text-align: center;
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
+
+.towhite-always {
+	-webkit-filter: grayscale(1) invert(1);
+	filter: grayscale(1) invert(1);
+}
+@media (prefers-color-scheme: dark) {
+	.towhite {
+		-webkit-filter: grayscale(1) invert(1);
+		filter: grayscale(1) invert(1);
+	}
+}
