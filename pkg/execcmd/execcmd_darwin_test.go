@@ -1,6 +1,7 @@
 package execcmd
 
 import (
+	"os"
 	"testing"
 )
 
@@ -62,5 +63,23 @@ func TestExecCommand(t *testing.T) {
 	}
 	if o != "" {
 		t.Error("expected o to be empty")
+	}
+
+	// Working directory test
+	hd, err := os.UserHomeDir()
+	if err != nil {
+		t.Error("couldn't get home dir")
+	}
+
+	command = `pwd`
+	cmd = ExecCommand(command, &Config{
+		Directory: hd,
+	})
+	o, err = CombinedOutput(cmd)
+	if err != nil {
+		t.Error("expected err to be nil")
+	}
+	if o != hd+"\n" {
+		t.Error("expected o equal home dir")
 	}
 }
